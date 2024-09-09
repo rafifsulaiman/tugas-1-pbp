@@ -61,10 +61,11 @@ untuk melakukan upload pada PWS, saya membuka halaman PWS pada https://pbp.cs.ui
 
 2.
 ![messageImage_1725905119582](https://github.com/user-attachments/assets/5dc1c04a-a684-48a3-8a75-fb18979ed9d7)
+
 ketika ada HTTP request yang dilakukan melalui browsing platform, alamat HTTP akan dicek apakah sesuai dengan url yang berada pada file urls.py. jika sesuai, maka permintaan akan dilanjutkan ke file views.py yang berisikan data untuk atribut-atribut yang terdapat pada models.py. setelah mendapatkan data dan juga atribut, data dan atribut itu akan disalurkan ke template yang sudah dibuat dengan file main.html. setelah data masuk ke dalam template, template akan memberikan respon ke browsing platform dengan menyajikan tampilan web sesuai dengan template yang sudah dibuat.
 
-3. git dapat menyimpan riwayat perubahan pada kode pengguna dan kembali ke versi sebelumnya, memfasilitasi kolaborasi tim pada proyek yang dikerjakan bersama, dan memungkinkan pengguna untuk membuat dan mengelola berbagai versi proyek.
+4. git dapat menyimpan riwayat perubahan pada kode pengguna dan kembali ke versi sebelumnya, memfasilitasi kolaborasi tim pada proyek yang dikerjakan bersama, dan memungkinkan pengguna untuk membuat dan mengelola berbagai versi proyek.
 
-4. karena framework django sangat ramah untuk dipelajari pemula, menyediakan banyak fitur built-in, dan memiliki banyak paket tambahan dan alat yang dapat memperluas fungsionalitasnya.
+5. karena framework django sangat ramah untuk dipelajari pemula, menyediakan banyak fitur built-in, dan memiliki banyak paket tambahan dan alat yang dapat memperluas fungsionalitasnya.
 
-5. Model pada Django disebut ORM (Object-Relational Mapping) karena Django memungkinkan pengguna untuk berinteraksi dengan basis data menggunakan kode Python. ORM ini menyediakan cara untuk mendefinisikan model basis data menggunakan kelas Python dan secara otomatis menghasilkan petnyataan SQL untuk berinteraksi dengan basisi data berdasarkan model tersebut.
+6. Model pada Django disebut ORM (Object-Relational Mapping) karena Django memungkinkan pengguna untuk berinteraksi dengan basis data menggunakan kode Python. ORM ini menyediakan cara untuk mendefinisikan model basis data menggunakan kelas Python dan secara otomatis menghasilkan petnyataan SQL untuk berinteraksi dengan basisi data berdasarkan model tersebut.
