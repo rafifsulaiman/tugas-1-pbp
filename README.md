@@ -59,7 +59,7 @@ setelah saya selesai membuat proyek, saya membuat repo baru dengan visibilitas p
 
 untuk melakukan upload pada PWS, saya membuka halaman PWS pada https://pbp.cs.ui.ac.id dan melakukan login. lalu saya membuat proyek baru pada PWS dengan menekan tombol Create New Project dan menamai proyeknya dengan tugas-1-pbp. lalu saya membuka kembali file settings.py saya dan menambahkan URL deployment PWS saya pada ALLOWED_HOST dengan format <username-sso>-<nama proyek>.pbp.cs.ui.ac.id dan melakukan git add, commit, dan push ke Github. lalu saya mengikuti tahapan-tahapan berupa perintah command prompt yang terdapat pada Project Command pada halaman PWS proyek saya. terakhir saya melakukan perintah pada command prompt berupa git branch -M main untuk mengubah branch utama menjadi main.
 
-2. 
+2. ketika ada HTTP request yang dilakukan melalui browsing platform, alamat HTTP akan dicek apakah sesuai dengan url yang berada pada file urls.py. jika sesuai, maka permintaan akan dilanjutkan ke file views.py yang berisikan data untuk atribut-atribut yang terdapat pada models.py. setelah mendapatkan data dan juga atribut, data dan atribut itu akan disalurkan ke template yang sudah dibuat dengan file main.html. setelah data masuk ke dalam template, template akan memberikan respon ke browsing platform dengan menyajikan tampilan web sesuai dengan template yang sudah dibuat.
 
 3. git dapat menyimpan riwayat perubahan pada kode pengguna dan kembali ke versi sebelumnya, memfasilitasi kolaborasi tim pada proyek yang dikerjakan bersama, dan memungkinkan pengguna untuk membuat dan mengelola berbagai versi proyek.
 
