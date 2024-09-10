@@ -2,8 +2,7 @@ Link PWS:
 
 1. untuk membuat sebuah proyek Django baru, saya membuat direktori baru pada file explorer saya, lalu membuka command prompt dan memasukkan perintah -m venv env, lalu menuliskan perintah env\Scripts\activate. ketika env sudah aktif, saya membuat requirements.txt berisikan dependencies-dependencies yang diperlukan, lalu melakukan perintah pada command prompt berupa pip install -r requirements.txt, lalu melakukan deactivate.
 
-setelah itu, saya menjalankan perintah python manage.py startapp main pada command prompt direktori proyek saya. perintah tersebut berfungsi untuk membuat folder main berisikan template-template bawaan dari Django pada direktori proyek saya.
-
+lalu, kita membuat proyek django dengan menjalankan perintah django-admin startproject get_supply. perintah tersebut berfungsi untuk membuat folder berdasarkan nama proyek saya dan sudah berisi file-file bawaan proyek dari django. setelah itu, saya menjalankan perintah python manage.py startapp main pada command prompt direktori proyek saya. perintah tersebut berfungsi untuk membuat folder main berisikan template-template bawaan dari Django pada direktori proyek saya.
 lalu, saya menambahkan main ke dalam INSTALLED_APPS pada file settings.py bawaan Django. main yang dimaksud adalah file main.html yang terbuat ketika saya memulai proyek Django pada direktori proyek saya.
 
 lalu pada berkas models.py, saya menambahkan class Product berisikan atribut-atribut yang menggunakan fungsi bawaan dari class Model pada Django. atribut-atribut yang saya definisikan adalah name, price, dan description yang diwajibkan serta saya menambahkan atribut baru untuk mempercantik tampilan berisikan gambar yang saya namakan image. berikut bentuk class dan atribut yang saya buat.
