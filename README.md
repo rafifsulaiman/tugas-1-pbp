@@ -1,4 +1,4 @@
-Link PWS: 
+Link PWS: http://rafif-sulaiman-getsupplynew.pbp.cs.ui.ac.id/
 
 1. untuk membuat sebuah proyek Django baru, saya membuat direktori baru pada file explorer saya, lalu membuka command prompt dan memasukkan perintah -m venv env, lalu menuliskan perintah env\Scripts\activate. ketika env sudah aktif, saya membuat requirements.txt berisikan dependencies-dependencies yang diperlukan, lalu melakukan perintah pada command prompt berupa pip install -r requirements.txt, lalu melakukan deactivate.
 
