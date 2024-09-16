@@ -130,7 +130,8 @@ referensi: https://docs.djangoproject.com/en/5.1/ref/forms/validation/
 
 referensi: https://docs.djangoproject.com/en/5.1/ref/csrf/
 
-5. - Pertama-tama, saya membuat direktori baru bernama ```templates``` pada root project, lalu membuat file ```base.html``` yang berguna untuk dijadikan sebagai template dasar atau kerangka umum untuk halaman web lainnya.
+5. Berikut penjelasan step-by-step bagaimana cara saya mengimplementasikan checklist yang diminta.
+- Pertama-tama, saya membuat direktori baru bernama ```templates``` pada root project, lalu membuat file ```base.html``` yang berguna untuk dijadikan sebagai template dasar atau kerangka umum untuk halaman web lainnya.
 ```bash
 {% load static %}
 <!DOCTYPE html>
