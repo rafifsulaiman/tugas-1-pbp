@@ -4,7 +4,7 @@
 - Nama : Rafif Sulaiman Dirvesa
 - Kelas : PBP C
 - NPM : 2306222771
-- Link PWS: http://rafif-sulaiman-getsupplynew.pbp.cs.ui.ac.id/
+- Link PWS: http://rafif-sulaiman-getsupply.pbp.cs.ui.ac.id/
 #
 
 # Table of Contents
