@@ -16,11 +16,11 @@
 ## Jawaban
 1. untuk membuat sebuah proyek Django baru, saya membuat direktori baru pada file explorer saya, lalu membuka command prompt dan memasukkan perintah ```-m venv env```, lalu menuliskan perintah ```env\Scripts\activate```. ketika env sudah aktif, saya membuat requirements.txt berisikan dependencies-dependencies yang diperlukan, lalu melakukan perintah pada command prompt berupa ```pip install -r requirements.txt```, lalu melakukan deactivate.
 
-lalu, kita membuat proyek django dengan menjalankan perintah ```django-admin startproject get_supply```. perintah tersebut berfungsi untuk membuat folder berdasarkan nama proyek saya dan sudah berisi file-file bawaan proyek dari django. setelah itu, saya menjalankan perintah python ```manage.py``` startapp main pada command prompt direktori proyek saya. perintah tersebut berfungsi untuk membuat folder main berisikan template-template bawaan dari Django pada direktori proyek saya.
+- lalu, kita membuat proyek django dengan menjalankan perintah ```django-admin startproject get_supply```. perintah tersebut berfungsi untuk membuat folder berdasarkan nama proyek saya dan sudah berisi file-file bawaan proyek dari django. setelah itu, saya menjalankan perintah python ```manage.py``` startapp main pada command prompt direktori proyek saya. perintah tersebut berfungsi untuk membuat folder main berisikan template-template bawaan dari Django pada direktori proyek saya.
 
-lalu, saya menambahkan main ke dalam INSTALLED_APPS pada file ```settings.py``` bawaan Django. main yang dimaksud adalah file main.html yang terbuat ketika saya memulai proyek Django pada direktori proyek saya.
+- lalu, saya menambahkan main ke dalam INSTALLED_APPS pada file ```settings.py``` bawaan Django. main yang dimaksud adalah file main.html yang terbuat ketika saya memulai proyek Django pada direktori proyek saya.
 
-lalu pada berkas ```models.py```, saya menambahkan class Product berisikan atribut-atribut yang menggunakan fungsi bawaan dari class Model pada Django. atribut-atribut yang saya definisikan adalah name, price, dan description yang diwajibkan serta saya menambahkan atribut baru untuk mempercantik tampilan berisikan gambar yang saya namakan image. berikut bentuk class dan atribut yang saya buat.
+- lalu pada berkas ```models.py```, saya menambahkan class Product berisikan atribut-atribut yang menggunakan fungsi bawaan dari class Model pada Django. atribut-atribut yang saya definisikan adalah name, price, dan description yang diwajibkan serta saya menambahkan atribut baru untuk mempercantik tampilan berisikan gambar yang saya namakan image. berikut bentuk class dan atribut yang saya buat.
 ```bash
 from django.db import models
 
@@ -31,7 +31,7 @@ class Product(models.Model):
     image = models.ImageField() #upload image
 ```
 
-setelah saya membuat atribut pada ```models.py```, saya membuat dictionary yang berisikan data yang akan saya masukkan kedalam template HTML. data yang diperlukan saya letakkan pada file ```views.py``` dan berisikan seperti berikut.
+- setelah saya membuat atribut pada ```models.py```, saya membuat dictionary yang berisikan data yang akan saya masukkan kedalam template HTML. data yang diperlukan saya letakkan pada file ```views.py``` dan berisikan seperti berikut.
 ```bash
 from django.shortcuts import render
 
@@ -48,7 +48,7 @@ def show_products(request):
 
 ```return render(request, 'main.html', content)``` berfungsi untuk mengantar isi dari dictionary content ke template HTML yang sudah saya buat, berikut isi dari template HTML-nya.
 
-bash```
+```bash
 <h1>Welcome to GetSupply by Rafif Sulaiman Dirvesa/2306222771</h1>
 
 <h5>Name: </h5>
@@ -61,7 +61,7 @@ bash```
 ```
 
 untuk melakukan pemetakan fungsi yang telah dibuat pada ```views.py```, saya membuat routing sebagai berikut.
-bash```
+```bash
 from main.views import show_products
 from django.urls import path
 
