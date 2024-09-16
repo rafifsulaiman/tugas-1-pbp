@@ -46,7 +46,7 @@ def show_products(request):
     return render(request, 'main.html', content)
 ```
 
-```return render(request, 'main.html', content)``` berfungsi untuk mengantar isi dari dictionary content ke template HTML yang sudah saya buat, berikut isi dari template HTML-nya.
+- ```return render(request, 'main.html', content)``` berfungsi untuk mengantar isi dari dictionary content ke template HTML yang sudah saya buat, berikut isi dari template HTML-nya.
 
 ```bash
 <h1>Welcome to GetSupply by Rafif Sulaiman Dirvesa/2306222771</h1>
@@ -60,7 +60,7 @@ def show_products(request):
 <img src="{{ image }}">
 ```
 
-untuk melakukan pemetakan fungsi yang telah dibuat pada ```views.py```, saya membuat routing sebagai berikut.
+- untuk melakukan pemetakan fungsi yang telah dibuat pada ```views.py```, saya membuat routing sebagai berikut.
 ```bash
 from main.views import show_products
 from django.urls import path
@@ -71,11 +71,11 @@ urlpatterns = [
 ]
 ```
 
-setelah saya selesai membuat proyek, saya membuat repo baru dengan visibilitas public pada akun github saya untuk melakukan upload ke dalam github. pertama-tama, saya melakukan perintah ```git init``` pada command prompt direktori proyek saya, membuat branch baru dengan perintah ```git checkout -b main```, melakukan add, commit, dan push, diakhiri dengan menjalankan perintah ```git push -u origin main``` (nama branch).
+- setelah saya selesai membuat proyek, saya membuat repo baru dengan visibilitas public pada akun github saya untuk melakukan upload ke dalam github. pertama-tama, saya melakukan perintah ```git init``` pada command prompt direktori proyek saya, membuat branch baru dengan perintah ```git checkout -b main```, melakukan add, commit, dan push, diakhiri dengan menjalankan perintah ```git push -u origin main``` (nama branch).
 
-untuk melakukan upload pada PWS, saya membuka halaman PWS pada https://pbp.cs.ui.ac.id dan melakukan login. lalu saya membuat proyek baru pada PWS dengan menekan tombol Create New Project dan menamai proyeknya dengan tugas-1-pbp. lalu saya membuka kembali file ```settings.py``` saya dan menambahkan URL deployment PWS saya pada ALLOWED_HOST dengan format <username-sso>-<nama proyek>.pbp.cs.ui.ac.id dan melakukan git add, commit, dan push ke Github. lalu saya mengikuti tahapan-tahapan berupa perintah command prompt yang terdapat pada Project Command pada halaman PWS proyek saya. terakhir saya melakukan perintah pada command prompt berupa git branch -M main untuk mengubah branch utama menjadi main.
+- untuk melakukan upload pada PWS, saya membuka halaman PWS pada https://pbp.cs.ui.ac.id dan melakukan login. lalu saya membuat proyek baru pada PWS dengan menekan tombol Create New Project dan menamai proyeknya dengan tugas-1-pbp. lalu saya membuka kembali file ```settings.py``` saya dan menambahkan URL deployment PWS saya pada ALLOWED_HOST dengan format <username-sso>-<nama proyek>.pbp.cs.ui.ac.id dan melakukan git add, commit, dan push ke Github. lalu saya mengikuti tahapan-tahapan berupa perintah command prompt yang terdapat pada Project Command pada halaman PWS proyek saya. terakhir saya melakukan perintah pada command prompt berupa git branch -M main untuk mengubah branch utama menjadi main.
 
-2.
+2. berikut bagan berisi request client ke web aplikasi berbasis Django.
 ![messageImage_1725905119582](https://github.com/user-attachments/assets/5dc1c04a-a684-48a3-8a75-fb18979ed9d7)
 
 ketika ada HTTP request yang dilakukan melalui browsing platform, alamat HTTP akan dicek apakah sesuai dengan url yang berada pada file ```urls.py```. jika sesuai, maka permintaan akan dilanjutkan ke file ```views.py``` yang berisikan data untuk atribut-atribut yang terdapat pada ```models.py```. setelah mendapatkan data dan juga atribut, data dan atribut itu akan disalurkan ke template yang sudah dibuat dengan file main.html. setelah data masuk ke dalam template, template akan memberikan respon ke browsing platform dengan menyajikan tampilan web sesuai dengan template yang sudah dibuat.
