@@ -1,18 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Welcome to GetSupply</h1>
-<p> By: Rafif Sulaiman Dirvesa/PBP C/2306222771
+<h1>Welcome to GetSupply, {{ user_name }}</h1>
+<h5> By: Rafif Sulaiman Dirvesa/PBP C/2306222771</h5>
 
-<h5>Name: </h5>
-<p>{{ name }}</p>
-<h5>Price: </h5>
-<p>{{ price }}</p>
-<h5>Description: </h5>
-<p>{{ description }}</p>
+<p>Name: {{ name }}</p>
+<p>Price: {{ price }}</p>
+<p>Description: {{ description }}</p>
 <img src="{{ image }}">
 
 {% if not product_entries %}
-<p>Belum ada data produk pada GetSupply.</p>
+<p>Belum ada data produk tambahan pada GetSupply.</p>
 {% else %}
 <table>
   <tr>
@@ -36,4 +33,10 @@
 <a href="{% url 'main:create_supply' %}">
   <button>Add New product</button>
 </a>
+
+<a href="{% url 'main:logout' %}">
+  <button>Logout</button>
+</a>
+
+<h5> Sesi terakhir login: {{ last_login }}</h5>
 {% endblock content %}

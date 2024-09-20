@@ -335,3 +335,38 @@ def show_json_by_id(request, id):
 
 **show_json_by_id**
 ![Screenshot (27)](https://github.com/user-attachments/assets/a1cd74bb-a63a-42f3-9b92-b4a87913e64e)
+
+
+# TUGAS 4
+[Back to Table of Contents](#table-of-contents)
+## Jawaban
+1. ```HttpResponseRedirect()``` dan ```redirect()``` merupakan 2 cara untuk melakukan pengalihan (redirect) dalam Django, namun ada beberapa perbedaan dalam cara menggunakannya, yaitu:
+
+- ```HttpResponseRedirect()``` adalah kelas respons yang mengembalikan respons HTTP 302 ke URL yang ditentukan. Untuk menggunakannya, perlu diberikan URL lengkap atau relatif sebagai argumen, seperti ```return HttpResponseRedirect('/url/')```. Untuk ini, perlu membangun URL sendiri, dan itu bisa menjadi lebih rumit jika URL memerlukan pengaturan khusus atau penggunaan fungsi pembalik URL (reverse).
+
+- ```redirect()``` adalah fungsi yang menyediakan cara yang lebih mudah dan fleksibel untuk melakukan pengalihan. Fungsi ini dapat menerima URL, model instance, atau bahkan nama tampilan sebagai argumen, contohnya ```return redirect('view_name', arg1='value')```. Fungsi ini juga mendukung penggunaan fungsi pembalik (```reverse()```) untuk membangun URL dari nama tampilan.
+
+2. 
+
+3. Perbedaan antara Authentication dan Authorization:
+
+- Authentication adalah suatu proses untuk memverifikasi identitas pengguna dan memastikan apakah pengguna adalah siapa yang mereka klaim, tujuannya adalah untuk menentukan siapa pengguna tersebut. Biasanya melibatkan pemeriksaan kredensial seperti username/password, token, dan metode autentikasi lainnya.
+
+- Authorization adalah suatu proses untuk menentukan apa yang dapat dilakukan oleh pengguna yang sudah terautentikasi. Bertujuan untuk menentukan apa yang diizinkan dan tidak diizinkan bagi pengguna dan melibatkan pengaturan izin dan aturan akses untuk menentukan apa saja yang bisa dilakukan oleh pengguna tertentu.
+
+Proses yang terjadi saat pengguna login
+- Pengguna memasukkan data kredensial (usernam dan password).
+- Django melakukan verifikasi kredensial tersebut terhadap data yang ada pada basis data.
+- Jika data kredensial cocok, Django akan mengidentifikasi pengguna sebagai pengguna yang valid dan sesi autentikasi dimulai.
+- Pengguna yang dianggap sudah terautentikasi dapat melanjutkan ke bagian lain dari aplikasi sesuai dengan otorisasi yang akan menetukan akses mereka.
+
+Implementasi Authentication dan Authorization pada Django
+**Authentication di Django**
+- Django menggunakan sistem autentikasi bawaan seperti login, logout, dan manajemen sesi pengguna
+- Modul yang digunakan adalah ```django.contrib.auth``` yang menyediakan model User, sistem login dan logout, serta autentikasi
+- Django juga mendukung autentikasi berbasis token, OAuth, dan metode autentikasi pihak ketiga melalui pustaka seperti ```django-allauth``` dan ```djangorestframework```
+
+**Authorization di Django**
+- Django mengelola otorisasi menggunakan permissions yang dapat diatur pada model, URL, atau tampilan tertentu
+- Permissions diatur dengan menggunakan dekorator seperto ```@login_required```
+- Django juga menyediakan pembatasan akses berbasis grup atau peran pengguna
