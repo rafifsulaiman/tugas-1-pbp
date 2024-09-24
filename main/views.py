@@ -26,7 +26,7 @@ def show_products(request):
     return render(request, 'main.html', content)
 
 def create_supply(request):
-    form = GetSupplyForm(request.POST or None)
+    form = GetSupplyForm(request.POST, request.FILES or None)
     if form.is_valid() and request.method == 'POST':
         supply_entry = form.save(commit=False)
         supply_entry.user = request.user
