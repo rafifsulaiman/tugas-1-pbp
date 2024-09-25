@@ -353,9 +353,9 @@ def show_json_by_id(request, id):
 
 ```HttpResponseRedirect()``` dan ```redirect()``` merupakan 2 cara untuk melakukan pengalihan (redirect) dalam Django, namun ada beberapa perbedaan dalam cara menggunakannya, yaitu:
 
-- ```HttpResponseRedirect()``` adalah kelas respons yang mengembalikan respons HTTP 302 ke URL yang ditentukan. Untuk menggunakannya, perlu diberikan URL lengkap atau relatif sebagai argumen, seperti ```return HttpResponseRedirect('/url/')```. Untuk ini, perlu membangun URL sendiri, dan itu bisa menjadi lebih rumit jika URL memerlukan pengaturan khusus atau penggunaan fungsi pembalik URL (reverse).
+- ```HttpResponseRedirect()``` adalah funsgi ntuk melakukan pengalihan yang perlu diberikan URL lengkap atau relatif sebagai argumen, seperti ```return HttpResponseRedirect('/url/')```. Untuk ini, perlu membangun URL sendiri,sehingga lebih rumit jika URL memerlukan penggunaan fungsi pembalik URL (reverse).
 
-- ```redirect()``` adalah fungsi yang menyediakan cara yang lebih mudah dan fleksibel untuk melakukan pengalihan. Fungsi ini dapat menerima URL, model instance, atau bahkan nama tampilan sebagai argumen, contohnya ```return redirect('view_name', arg1='value')```. Fungsi ini juga mendukung penggunaan fungsi pembalik (```reverse()```) untuk membangun URL dari nama tampilan.
+- ```redirect()``` adalah fungsi yang menyediakan cara yang lebih mudah dan fleksibel untuk melakukan pengalihan. Fungsi ini dapat menerima URL, model instance, atau bahkan nama tampilan sebagai argumen, contohnya ```return redirect('view_name', arg1='value')```. Fungsi ini juga mendukung penggunaan fungsi pembalik (```reverse()```) untuk membangun URL dari nama tampilan, sehingga lebih mudah dan fleksibel dalam penggunaannya.
 
 **2. Berikut langkah-langkah cara kerja penghubungan model Product dengan User**
 - Tambahkan field ```ForeignKey``` pada model ```Product``` yang mengarah ke model ```User```.
@@ -385,17 +385,17 @@ def create_supply(request):
     context = {"form": form}
     return render(request, 'create_supply.html', context)
 ```
-- Melalui kode diatas, ```Product``` akan terhubung dengan ```User``` yang membuat entry tersebut. Penghubungan ini memungkinkan server untuk melacak product setiap pengguna dan mengelola data secara terpisah berdasarkan pengguna yang login.
+- Melalui kode diatas, ```Product``` akan terhubung dengan ```User``` yang membuat entry tersebut menggunakan ```ForeignKey``` user. Penghubungan ini memungkinkan server untuk melacak product setiap pengguna dan mengelola data secara terpisah berdasarkan pengguna yang login.
 
 
 **3. Perbedaan antara Authentication dan Authorization:**
 
-- Authentication adalah suatu proses untuk memverifikasi identitas pengguna dan memastikan apakah pengguna adalah siapa yang mereka klaim, tujuannya adalah untuk menentukan siapa pengguna tersebut. Biasanya melibatkan pemeriksaan kredensial seperti username/password, token, dan metode autentikasi lainnya.
+- Authentication adalah suatu proses untuk memverifikasi identitas pengguna dan memastikan apakah akun pengguna terdapat pada sistem, tujuannya adalah untuk menentukan siapa pengguna tersebut. Biasanya melibatkan pemeriksaan kredensial seperti username/password, token, dan metode autentikasi lainnya.
 
-- Authorization adalah suatu proses untuk menentukan apa yang dapat dilakukan oleh pengguna yang sudah terautentikasi. Bertujuan untuk menentukan apa yang diizinkan dan tidak diizinkan bagi pengguna dan melibatkan pengaturan izin dan aturan akses untuk menentukan apa saja yang bisa dilakukan oleh pengguna tertentu.
+- Authorization adalah suatu proses untuk menentukan apa yang dapat dilakukan oleh pengguna yang sudah terautentikasi. Bertujuan untuk menentukan apa yang diizinkan dan tidak diizinkan bagi pengguna.
 
 **Proses yang terjadi saat pengguna login**
-- Pengguna memasukkan data kredensial (usernam dan password).
+- Pengguna memasukkan data kredensial (username dan password).
 - Django melakukan verifikasi kredensial tersebut terhadap data yang ada pada basis data.
 - Jika data kredensial cocok, Django akan mengidentifikasi pengguna sebagai pengguna yang valid dan sesi autentikasi dimulai.
 - Pengguna yang dianggap sudah terautentikasi dapat melanjutkan ke bagian lain dari aplikasi sesuai dengan otorisasi yang akan menetukan akses mereka.
@@ -413,8 +413,8 @@ Authorization di Django
 - Django juga menyediakan pembatasan akses berbasis grup atau peran pengguna
 
 **4. Bagaimana Django mengingat pengguna yang telah login?**
-- Django menggunakan cookies dan session untuk menghubungkan pengguna dengan status autentikasinya. Setelah itu, Django menyimpan informasi sesi di backend server (seperti database, cache, dsb) dan menyimpan kunci sesi dalam cookie di browser pengguna.
-- Cookie ini disebut sebagai session cookie dan meemiliki id sesi yang unik. Django menggunakan id sesi yang ada dalam cookie untuk mencari data sesi yang sesuai di server, sehingga dapat mengenali pengguna yang telah login.
+- Django menggunakan cookies dan session untuk menghubungkan pengguna dengan status autentikasinya. Setelah itu, Django menyimpan informasi sesi di backend server (pada database) dan menyimpan kunci sesi dalam cookie di browser pengguna.
+- Cookie ini disebut sebagai session cookie dan memiliki id sesi yang unik. Django menggunakan id sesi yang ada dalam cookie untuk mencari data sesi yang sesuai di server.
 
 **Kegunaan lain dari cookies**
 - Pelacakan pengguna. Cookies digunakan untuk melacak aktivitas pengguna pada situs web.
@@ -659,7 +659,7 @@ def show_products(request):
     return render(request, 'main.html', content)
 ...
 ```
-
+- lalu saya membuat sebuah akun pada local dan melakukan migrasi
 - lalu, saya melakukan modifikasi dan menambahkan import ```os``` pada ```settings.py``` saya. berikut perubahannya.
 
 ```bash
@@ -672,7 +672,7 @@ DEBUG = not PRODUCTION
 ...
 ```
 
-- lalu, saya membuat dua akun pengguna dengan masing tiga dummy data.
+- lalu, saya membuat satu akun pengguna lain dengan masing tiga dummy data.
 
 **Akun dengan username rafif.sulaiman**
 
