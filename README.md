@@ -11,6 +11,7 @@
 - [Tugas 2](#tugas-2)
 - [Tugas 3](#tugas-3)
 - [Tugas 4](#tugas-4)
+- [Tugas 5](#tugas-5)
 
 # TUGAS 2
 [Back to Table of Contents](#table-of-contents)
@@ -681,3 +682,94 @@ DEBUG = not PRODUCTION
 **Akun dengan username sulaiman.rafif**
 
 ![Screenshot (36)](https://github.com/user-attachments/assets/14c8c742-f506-4bef-a7af-ebe77036e171)
+
+# TUGAS 5
+[Back to Table of Contents](#table-of-contents)
+## Jawaban
+**1. Prioritas CSS selector**
+Urutan prioritas yang akan diterapkan ketika ada beberapa selector dengan elemen yang sama adalah, !important, Inline Styles, ID Selector, Class (Class, Pseudo-class, dan Attribute Selector), Tag Selector, terakhir Universal Selector dan Inheritance. Jadi, ketika terdapat selector-selector seperti ini
+
+```bash
+p {
+  color: black;
+}
+
+p.example {
+  color: green;
+}
+
+#example {
+  color: blue;
+}
+
+p[title="example"] {
+  color: purple;
+}
+
+p {
+  color: red !important;
+}
+```
+
+Yang akan diutamakan adalah ```color: red !important;``` karena terdapat !important.
+
+**2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web?**
+Responsive design menjadi sangat penting karena:
+  - Pengguna bisa mendapatkan pengalaman yang optimal pada berbagai ukuran layar tanpa harus melakukan zoom yang berlebihan.
+  - Dengan menggunakan responsive design, aplikasi web dapat diakses oleh berbagai pengguna walaupun ukuran layarnya beragam.
+  - Responsive design membuat para developer tidak perlua membuat situs untuk masing-masing ukuran layar pengguna, cukup satu situs yang dapat bekerja di semua perangkat.
+
+Aplikasi-aplikasi yang sudah menerapkan responsive design:
+  - YouTube
+  - Twitter
+
+Aplikasi-aplikasi yang belum menerapkan responsive design:
+  - Instagram
+  - Craigslist
+
+**3. Perbedaan Margin, Border, dan Padding**
+- *Margin* adalah ruang di luar elemen, yang berarti margin menentukan jarak antara elemen satu dengan elemen lainnya. Contoh penggunaan:
+
+```bash
+div {
+  margin: 20px; /* Menambahkan margin 20px pada semua sisi */
+  margin-top: 10px; /* Menambahkan margin 10px di bagian atas */
+  margin-right: 15px; /* Menambahkan margin 15px di sisi kanan */
+  margin-bottom: 5px; /* Menambahkan margin 5px di bagian bawah */
+  margin-left: 25px; /* Menambahkan margin 25px di sisi kiri */
+}
+```
+
+- *Border* adalah garis yang mengelilingi padding di konten elemen, berguna untuk membuat suatu batas visual di sekitar elemen. Contoh penggunaan:
+
+```bash
+div {
+  border: 2px solid blue; /* Border biru dengan ketebalan 2px */
+  border-width: 5px; /* Mengatur ketebalan border */
+  border-style: dashed; /* Mengatur border menjadi garis putus-putus */
+  border-color: red; /* Warna border merah */
+}
+```
+
+- *Padding* adalah ruang di dalam elemen, yang berarti padding berguna untuk mengatur jarak di dalam elemen, antara konten dan border. Contoh penggunaan:
+
+```bash
+div {
+  padding: 10px; /* Menambahkan padding 10px di semua sisi */
+  padding-top: 15px; /* Padding 15px di bagian atas */
+  padding-right: 20px; /* Padding 20px di sisi kanan */
+  padding-bottom: 5px; /* Padding 5px di bagian bawah */
+  padding-left: 30px; /* Padding 30px di sisi kiri */
+}
+```
+
+**4. Konsep *flex box* dan *grid layout* serta kegunaannya**
+  - *Flex box* adalah model yang berfungsi untuk menentukan tata letak elemen pada satu dimensi, antara baris atau kolom. *Flex box* digunakan untuk mendistribusikan ruang di antara item dalam sebuah container. Kegunaan flex box:
+    - Flex box memungkinkan elemen-elemen dalam container untuk berubah ukuran secara otomatis sesuai dengan ruang yang tersedia
+    - Flex box menyediakan kontrol penuh atas distribusi ruang, penataan spasi antar-elemen, dan perataan item
+    - Flex box mempermudah pembuatan responsive design
+  
+  - *Grid layout* adalah model yang berfungsi untuk menentukan tata letak elemen pada dua dimensi, memungkinkan developer untuk menata elemen-elemen dalam baris dan kolom sekaligus. *Grid layout* cocok digunakan untuk membuat layout kompleks di mana elemen-elemen ditempatkan pada grid yang diatur dalam beberapa baris dan kolom. Kegunaan grid layout:
+    - Grid layout memungkinkan pengaturan tata letak baris dan kolom, sehingga memudahkan developer ketika membuat struktur halaman yang kompleks
+    - Grid layout memungkinkan tata letak yang fleksibel dan responsif (dapat berubah-ubah mengikuti ukuran layar)
+    - Dengan grid layout, elemen dapat dengan mudah diatur agar mengisi area grid tertentu tanpa harus menulis kode yang rumit

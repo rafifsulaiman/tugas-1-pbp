@@ -5,28 +5,114 @@
 {% endblock meta %}
 
 {% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="container-box">
+    <div class="text-center">
+      <h1 class="getsupply-logo text-center text-4xl mb-10 font-bold text-gray-900">GetSupply</h1>
+      <p class="mb-4 text-gray-600">Sign up to access our services and store your products.</p>
 
-<div class="login">
-  <h1>Register</h1>
+    <form class="space-y-4" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm space-y-4">
+        {% for field in form %}
+          <div>
+            <input id="{{ field.id_for_label }}" name="{{ field.name }}" type="{{ field.field.widget.input_type }}" placeholder="{{ field.label }}" required class="appearance-none rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
 
-  <form method="POST">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
-      </tr>
-    </table>
-  </form>
+      <div class="mt-4">
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          Sign up
+        </button>
+      </div>
+    </form>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-500">
+        Already have an account?
+        <a href="{% url 'main:login' %}" class="font-medium text-blue-500 hover:underline">
+          Login here
+        </a>
+      </p>
+    </div>
+  </div>
 </div>
 
+<style>
+  .container-box {
+    max-width: 700px; /* Adjust the max-width to make the container bigger */
+    width: 100%; /* Ensure it takes up the full width up to max-width */
+    padding: 50px; /* Increase padding for a larger container */
+    background-color: white; /* White background for the box */
+    border-radius: 10px; /* Slight rounding for smooth corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for better visibility */
+  }
+  
+  .getsupply-logo {
+    {% comment %} font-family: 'Comic Sans MS', cursive; {% endcomment %}
+    font-size: 50px;
+  }
+
+  .form-style input {
+    background-color: #fafafa;
+    border-color: #dbdbdb;
+  }
+
+  .form-style input:focus {
+    border-color: #a8a8a8;
+  }
+
+  .bg-blue-500 {
+    background-color: #0095f6;
+  }
+
+  .bg-blue-500:hover {
+    background-color: #007ac6;
+  }
+
+  .text-gray-500 {
+    color: #8e8e8e;
+  }
+
+  input {
+    width: 100%;
+    padding: 20px; /* Larger padding for bigger field */
+    font-size: 18px; /* Larger font size */
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 100%;
+    padding: 20px; /* Larger button */
+    font-size: 18px;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #007ac6;
+  }
+</style>
 {% endblock content %}
