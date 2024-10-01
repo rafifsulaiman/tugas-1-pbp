@@ -903,10 +903,12 @@ urlpatterns = [
 - lalu saya membuat navigation bar pada proyek saya melalui file ```navbar.html``` yang saya letakkan pada folder templates di root directory proyek saya. berikut isi dari filenya.
 
 ```bash
-<nav class="bg-black shadow-lg fixed top-0 left-0 z-40 w-screen dark:bg-gray-800">
+{% load static %}
+<nav class="bg-gray-800 shadow-lg fixed top-0 left-0 z-40 w-screen dark:bg-gray-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
     <!-- Logo mentok ke kiri -->
-    <div class="absolute left-7 pr-4">
+    <div class="flex items-center space-x-0 absolute left-7 pr-4">
+      <img src="{% static 'gif/applogo.png' %}" alt="Sad face" class="w-18 h-12 mb-0"/>
       <h1 class="text-2xl font-bold text-purple-400 dark:text-purple-300">GetSupply</h1>
     </div>
 
