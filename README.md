@@ -369,7 +369,7 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    mood = models.CharField(max_length=255)
+    user_name = models.CharField(max_length=255)
     ...
 ```
 - ```User``` pada ```Product``` membuat hubungan antara entry product dan pengguna yang membuat product tersebut. Fungsi ```on_delete=models.CASCADE``` adalah agar ketika ```User``` dihapus, maka entry pada ```Product``` yang terkait juga akan terhapus. Satu ```User``` dapat memiliki banyak ```Product```, tetapi tiap ```Product``` hanya bisa dimiliki oleh satu ```User```. Saat membuat ```Product``` baru, entry tersebut dapat dihubungkan dengan pengguna yang sedang login dan membuat entry tersebut.
@@ -773,3 +773,822 @@ div {
     - Grid layout memungkinkan pengaturan tata letak baris dan kolom, sehingga memudahkan developer ketika membuat struktur halaman yang kompleks
     - Grid layout memungkinkan tata letak yang fleksibel dan responsif (dapat berubah-ubah mengikuti ukuran layar)
     - Dengan grid layout, elemen dapat dengan mudah diatur agar mengisi area grid tertentu tanpa harus menulis kode yang rumit
+
+**5. Step-by-step Implementasi Checklist**
+- pertama-tama, saya menambahkan Tailwind ke proyek Django saya dengan menambahkan baris kode ini pada ```base.html``` saya.
+
+```bash
+<head>
+{% block meta %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock meta %}
+<script src="https://cdn.tailwindcss.com">
+</script>
+</head>
+```
+
+- lalu saya menambahkan fungsi baru pada ```views.py``` saya, yaitu ```edit_product``` dan ```delete_product```.
+
+```bash
+def edit_product(request, id):
+    #get product entry berdasarkan id
+    product = Product.objects.get(pk = id)
+
+    # Set product entry sebagai instance dari form
+    form = GetSupplyForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_products'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, id):
+    product = Product.objects.get(pk = id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_products'))
+```
+
+- selain itu saya juga menambahkan import ```reverse``` dan ```HttpResponseRedirect``` pada file ```views.py``` saya.
+- lalu, saya membuat file html untuk page edit_product saya pada subdirektori ```main/templates```. berikut isi ```edit_product.html```.
+
+```bash
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Edit Product</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
+  <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-black dark:text-white">Edit Product</h1>
+  
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 form-style">
+      <form method="POST" class="space-y-6">
+          {% csrf_token %}
+          {% for field in form %}
+              <div class="flex flex-col">
+                  <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700 dark:text-gray-300">
+                      {{ field.label }}
+                  </label>
+                  <div class="w-full">
+                      {{ field }}
+                  </div>
+                  {% if field.help_text %}
+                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                  {% endif %}
+                  {% for error in field.errors %}
+                      <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                  {% endfor %}
+              </div>
+          {% endfor %}
+          <div class="flex justify-center mt-6">
+              <button type="submit" class="bg-indigo-600 dark:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition duration-300 ease-in-out w-full">
+                  Edit Product
+              </button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+```
+
+- dan menambahkan tombol untuk delete dan edit product saya pada ```main.html```. berikut tambahan kode nya
+
+```bash
+<td>
+        <a href="{% url 'main:edit_product' product_entry.pk %}">
+            <button>
+                Edit
+            </button>
+        </a>
+    </td>
+    <td>
+        <a href="{% url 'main:delete_product' product_entry.pk %}">
+            <button>
+                Delete
+            </button>
+        </a>
+    </td>
+```
+
+- lalu, saya membuka ```urls.py``` saya pada folder ```main``` untuk melakukan import fungsi edit dan delete, serta membuat path untuk masing-masing fungsi.
+
+```bash
+from main.views import show_products, create_supply, show_json, show_json_by_id, show_xml, show_xml_by_id, register, login_user, logout_user, edit_product, delete_product
+from django.urls import path
+
+app_name = 'main'
+urlpatterns = [
+    path('', show_products, name='show_products'),
+    path('create-supply', create_supply, name='create_supply'),
+    path('json/', show_json, name='show_json'),
+    path('json/<str:id>', show_json_by_id, name='show_json_by_id'),
+    path('xml/', show_xml, name='show_xml'),
+    path('xml/<str:id>', show_xml_by_id, name='show_xml_by_id'),
+    path('register/', register, name='register'),
+    path('login/', login_user, name='login'),
+    path('logout/', logout_user, name='logout'),
+    path('edit-product/<uuid:id>', edit_product, name='edit_product'),
+    path('delete-product/<uuid:id>', delete_product, name='delete_product'),
+]
+```
+
+- lalu saya membuat navigation bar pada proyek saya melalui file ```navbar.html``` yang saya letakkan pada folder templates di root directory proyek saya. berikut isi dari filenya.
+
+```bash
+<nav class="bg-black shadow-lg fixed top-0 left-0 z-40 w-screen dark:bg-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    <!-- Logo mentok ke kiri -->
+    <div class="absolute left-7 pr-4">
+      <h1 class="text-2xl font-bold text-purple-400 dark:text-purple-300">GetSupply</h1>
+    </div>
+
+    <div class="hidden md:flex items-center justify-center h-16 space-x-4 mx-auto">
+      {% if user.is_authenticated %}
+        <!-- Links -->
+        <a href="{% url 'main:show_products' %}" class="hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Home
+        </a>
+
+        <a href="{% url 'main:create_supply' %}" class="hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Add New Product
+        </a>
+
+        <a href="{% url 'main:show_products' %}#products" class="hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          View Products
+        </a>
+
+        <!-- Theme Toggle Button (Desktop) -->
+        <button id="theme-toggle-desktop" class="bg-gray-200 dark:bg-gray-600 dark:text-white text-black font-bold py-2 px-4 rounded-lg transition duration-300">
+          Switch to Night Mode
+        </button>
+
+        <!-- Logout Button -->
+        <a href="{% url 'main:logout' %}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Logout
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="hidden md:flex absolute right-0 pr-4">
+      <span class="text-purple-300 mr-4 dark:text-purple-200">Welcome, {{ user.username }}</span>
+    </div>
+
+    <!-- Mobile menu button -->
+    <div class="md:hidden flex items-center ml-auto">
+      <button class="mobile-menu-button">
+        <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
+    <div class="pt-2 pb-3 space-y-1 mx-auto">
+      {% if user.is_authenticated %}
+        <!-- Welcome message buat mobile view -->
+        <span class="block text-gray-300 dark:text-gray-200">Welcome, {{ user.username }}</span>
+
+        <!-- Mobile Links -->
+        <a href="{% url 'main:show_products' %}" class="block hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Home
+        </a>
+
+        <a href="{% url 'main:create_supply' %}" class="block hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Add New Product
+        </a>
+
+        <a href="{% url 'main:show_products' %}#products" class="block hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          View Products
+        </a>
+
+        <!-- Theme Toggle Button (Mobile) -->
+        <button id="theme-toggle-mobile" class="bg-gray-200 dark:bg-gray-600 dark:text-white text-black font-bold py-2 px-4 rounded-lg transition duration-300">
+          Switch to Night Mode
+        </button>
+
+        <!-- Logout Button -->
+        <a href="{% url 'main:logout' %}" class="block text-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Logout
+        </a>
+      {% else %}
+        <a href="{% url 'main:login' %}" class="block text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Login
+        </a>
+        <a href="{% url 'main:register' %}" class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+          Register
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Script buat mobile menu dan tombol tema -->
+  <script>
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    //tombol tema
+    const themeToggleDesktop = document.getElementById('theme-toggle-desktop');
+    const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    //if dan else sesuai dengan tema yang dipilih
+    if (currentTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      themeToggleDesktop.textContent = 'Switch to Day Mode';
+      themeToggleMobile.textContent = 'Switch to Day Mode';
+    } else {
+      document.documentElement.classList.add('light');
+      themeToggleDesktop.textContent = 'Switch to Night Mode';
+      themeToggleMobile.textContent = 'Switch to Night Mode';
+    }
+
+    //fungsi buat milih tema
+    function toggleTheme() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        localStorage.setItem('theme', 'light');
+        themeToggleDesktop.textContent = 'Switch to Night Mode';
+        themeToggleMobile.textContent = 'Switch to Night Mode';
+      } else {
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        themeToggleDesktop.textContent = 'Switch to Day Mode';
+        themeToggleMobile.textContent = 'Switch to Day Mode';
+      }
+    }
+
+    themeToggleDesktop.addEventListener('click', toggleTheme);
+    themeToggleMobile.addEventListener('click', toggleTheme);
+  </script>
+</nav>
+```
+
+- lalu saya melakukan konfigurasi untuk static files pada aplikasi saya dengan menambahkan beberapa baris kode pada ```settings.py``` saya.
+
+```bash
+...
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #Tambahkan tepat di bawah SecurityMiddleware
+    ...
+]
+...
+STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static' # merujuk ke /static root project pada mode development
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static' # merujuk ke /static root project pada mode production
+...
+```
+
+- lalu, untuk melakukan styling melalui css dan tailwind, saya membuat file ```global.css``` di ```/static/css``` pada root directory. berikut isi dari file ```global.css``` saya
+
+```bash
+.form-style form input, form textarea, form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #bcbcbc;
+    border-radius: 0.375rem;
+}
+.form-style form input:focus, form textarea:focus, form select:focus {
+    outline: none;
+    border-color: #674ea7;
+    box-shadow: 0 0 0 3px #674ea7;
+}
+@keyframes shine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.animate-shine {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3));
+    background-size: 200% 100%;
+    animation: shine 3s infinite;
+}
+```
+
+- lalu saya melakukan styling untuk masing-masing file html saya. berikut isi dari ```base.html``` saya yang sudah saya modifikasi.
+
+```bash
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Aktifkan dark mode berbasis class
+        theme: {
+          extend: {},
+        }
+      }
+    </script>
+  </head>
+
+  <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
+    {% block content %} {% endblock content %}
+    
+    <!-- Theme Toggle Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Ambil tombol switch tema
+          const themeToggle = document.getElementById('theme-toggle');
+          const currentTheme = localStorage.getItem('theme') || 'light';
+      
+          // Terapkan tema saat ini pada elemen <html>
+          if (currentTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+            if (themeToggle) themeToggle.textContent = 'Switch to Day Mode';
+          } else {
+            document.documentElement.classList.add('light');
+            if (themeToggle) themeToggle.textContent = 'Switch to Night Mode';
+          }
+      
+          // Mengubah tema ketika tombol diklik
+          if (themeToggle) {
+            themeToggle.addEventListener('click', function () {
+              if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = 'Switch to Night Mode';
+              } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = 'Switch to Day Mode';
+              }
+            });
+          }
+        });
+    </script>
+  </body>
+</html>
+```
+
+- modifikasi pada ```main.html``` saya
+
+```bash
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>GetSupply</title>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col transition-colors duration-500">
+  <div class="p-2 mb-6 relative">
+    <p class="text-center text-gray-600 dark:text-gray-100 font-bold text-3xl mb-8">Welcome to GetSupply!</p>
+    <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
+      {% include "card_info.html" with title='Name' value=name %}
+      {% include "card_info.html" with title='NPM' value=npm %}
+      {% include "card_info.html" with title='Class' value=class %}
+    </div>
+  </div>
+
+  <!-- Bar bertuliskan "Products" -->
+  <div class="w-full bg-purple-700 dark:bg-purple-800 text-center dark:bg-purple-500 text-white dark:text-gray-200 text-2xl font-bold p-3 rounded-md mb-4">
+    Products
+  </div>
+  
+  <!-- Kondisi Produk -->
+  <section id="products" class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
+    {% if not product_entries %}
+    <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+      <img src="{% static 'gif/laughing.gif' %}" alt="Sad face" class="w-45 h-45 mb-4"/>
+      <p class="text-center text-gray-600 dark:text-gray-400 font-bold text-xl mt-4">Belum ada data product pada GetSupply.</p>
+    </div>
+    {% else %}
+    <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
+      {% for product_entry in product_entries %}
+      {% include 'card_product.html' with product_entry=product_entry %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+  
+  <!-- Last Login -->
+  <div class="px-0 mt-6">
+    <div class="flex rounded-md items-center bg-purple-600 dark:bg-purple-500 py-2 px-4 w-fit">
+      <h1 class="text-white text-center dark:text-gray-200">Last Login: {{last_login}}</h1>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+```
+
+- modifikasi pada ```register.html``` saya
+
+```bash
+{% extends 'base.html' %}
+{% include 'navbar.html' %}
+
+{% block meta %}
+<title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="container-box">
+    <div class="text-center">
+      <h1 class="getsupply-logo text-center text-4xl mb-10 font-bold text-gray-900">GetSupply</h1>
+      <p class="mb-4 text-gray-600">Sign up to access our services and store your products.</p>
+
+    <form class="space-y-4" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm space-y-4">
+        {% for field in form %}
+          <div>
+            <input id="{{ field.id_for_label }}" name="{{ field.name }}" type="{{ field.field.widget.input_type }}" placeholder="{{ field.label }}" required class="appearance-none rounded w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          Sign up
+        </button>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-500">
+        Already have an account?
+        <a href="{% url 'main:login' %}" class="font-medium text-blue-500 hover:underline">
+          Login here
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .container-box {
+    max-width: 700px; /* Adjust the max-width to make the container bigger */
+    width: 100%; /* Ensure it takes up the full width up to max-width */
+    padding: 50px; /* Increase padding for a larger container */
+    background-color: white; /* White background for the box */
+    border-radius: 10px; /* Slight rounding for smooth corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for better visibility */
+  }
+  
+  .getsupply-logo {
+    {% comment %} font-family: 'Comic Sans MS', cursive; {% endcomment %}
+    font-size: 50px;
+  }
+
+  .form-style input {
+    background-color: #fafafa;
+    border-color: #dbdbdb;
+  }
+
+  .form-style input:focus {
+    border-color: #a8a8a8;
+  }
+
+  .bg-blue-500 {
+    background-color: #0095f6;
+  }
+
+  .bg-blue-500:hover {
+    background-color: #007ac6;
+  }
+
+  .text-gray-500 {
+    color: #8e8e8e;
+  }
+
+  input {
+    width: 100%;
+    padding: 20px; /* Larger padding for bigger field */
+    font-size: 18px; /* Larger font size */
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 100%;
+    padding: 20px; /* Larger button */
+    font-size: 18px;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #007ac6;
+  }
+</style>
+{% endblock content %}
+```
+
+- modifikasi pada ```login.html``` saya
+
+```bash
+{% extends 'base.html' %}
+{% include 'navbar.html' %}
+
+{% block meta %}
+<title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="login-container flex items-center justify-center h-screen bg-gray-700">
+  <div class="login-box bg-white p-10 rounded-lg shadow-md max-w-md w-full">
+    <h1 class="getsupply-logo text-center text-4xl mb-10 font-bold text-gray-900">GetSupply</h1>
+    <h2 class="login-info text-left text-1l mb-1 font-bold text-red-600">Log In To Your Account</h2>
+    
+    <form class="space-y-6" method="POST" action="">
+      {% csrf_token %}
+      <div class="rounded-md shadow-sm">
+        <div>
+          <input id="username" name="username" type="text" required 
+                 class="appearance-none rounded-t-md w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                 placeholder="Username">
+        </div>
+        <div>
+          <input id="password" name="password" type="password" required 
+                 class="appearance-none rounded-b-md w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                 placeholder="Password">
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" 
+                class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Log In
+        </button>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      {% if message.tags == "success" %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% elif message.tags == "error" %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% else %}
+            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-500">
+        Don't have an account?
+        <a href="{% url 'main:register' %}" class="font-medium text-blue-500 hover:underline">
+          Sign up
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .login-container {
+      background-color: #fafafa;
+      padding: 40px;
+  }
+
+  .login-box {
+    border: 1px solid #dbdbdb;
+    padding: 50px; /* Adjust padding if necessary */
+    max-width: 700px; /* Increase this value to make it wider */
+    width: 100%; /* Make it responsive */
+    margin-top: 0;
+  }
+
+  .login-info {
+    font-size: 15px;
+  }
+
+  .getsupply-logo {
+      {% comment %} font-family: 'Comic Sans MS', cursive; {% endcomment %}
+      font-size: 50px;
+  }
+
+  .rounded-md input {
+      background-color: #fafafa;
+      border-color: #dbdbdb;
+  }
+
+  .rounded-md input:focus {
+      border-color: #a8a8a8;
+  }
+
+  .bg-blue-500 {
+      background-color: #0095f6;
+  }
+
+  .bg-blue-500:hover {
+      background-color: #007ac6;
+  }
+
+  .text-gray-500 {
+      color: #8e8e8e;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+  }
+</style>
+
+{% endblock content %}
+```
+
+- modifikasi pada ```create_supply.html``` saya
+
+```bash
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block meta %}
+<title>Create Product</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
+  <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-black dark:text-white">Create New Product</h1>
+  
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 form-style">
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="flex flex-col">
+            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700 text-lg dark:text-gray-300">
+              {{ field.label }}
+            </label>
+            <div class="w-full">
+              {{ field|add_class:"text-black dark:text-white dark:bg-gray-600" }}
+            </div>
+            {% if field.help_text %}
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="flex justify-center mt-6">
+          <button type="submit" class="bg-purple-600 dark:bg-purple-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition duration-300 ease-in-out w-full">
+            Create New Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+```
+
+- modifikasi pada ```edit_product.html``` saya
+
+```bash
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Edit Product</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
+  <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-black dark:text-white">Edit Product</h1>
+  
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 form-style">
+      <form method="POST" class="space-y-6">
+          {% csrf_token %}
+          {% for field in form %}
+              <div class="flex flex-col">
+                  <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700 dark:text-gray-300">
+                      {{ field.label }}
+                  </label>
+                  <div class="w-full">
+                      {{ field }}
+                  </div>
+                  {% if field.help_text %}
+                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                  {% endif %}
+                  {% for error in field.errors %}
+                      <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                  {% endfor %}
+              </div>
+          {% endfor %}
+          <div class="flex justify-center mt-6">
+              <button type="submit" class="bg-indigo-600 dark:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition duration-300 ease-in-out w-full">
+                  Edit Product
+              </button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+```
+
+- lalu saya membuat masing-masing file ```card_info.html``` dan ```card_product.html```, berikut isi dari masing-masing filenya.
+- ```card_product.html```
+
+```bash
+<div class="relative break-inside-avoid bg-purple-100 shadow-md rounded-lg mb-6 border-2 border-purple-300 dark:bg-gray-700">
+    <!-- Kontainer Flex untuk gambar dan konten -->
+    <div class="flex items-center p-4 space-x-4">
+        <!-- Gambar Produk di sebelah kiri -->
+        <div class="flex-shrink-0">
+            <img src="{{ product_entry.image.url }}" alt="Gambar Produk" width="300" height="400" class="rounded-xl">
+        </div>
+
+        <!-- Konten Card di sebelah kanan -->
+        <div class="flex-grow">
+            <h3 class="font-bold text-4xl mb-2">{{ product_entry.name }}</h3>
+            <p class="text-gray-600 text-xl mb-8 dark:text-gray-200">{{ product_entry.description }}</p>
+            <hr class="border-t-2 border-gray-400 my-4">
+
+
+            <div class="mt-4">
+                <p class="text-2xl font-bold mt-4 mb-2">Price</p>
+                <p class="text-gray-600 text-lg dark:text-gray-200">{{ product_entry.price }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tombol Edit dan Delete di bagian bawah kanan -->
+    <div class="flex justify-end p-4 space-x-2">
+        <a href="{% url 'main:edit_product' product_entry.pk %}" class="bg-purple-500 hover:bg-purple-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+            </svg>
+        </a>
+        <a href="{% url 'main:delete_product' product_entry.pk %}" class="bg-amber-600 hover:bg-amber-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+        </a>
+    </div>
+</div>
+```
+
+- ```card_info.html```
+
+```bash
+<div class="bg-purple-700 dark:bg-purple-900 rounded-xl overflow-hidden border-2 border-purple-800">
+    <div class="p-4 animate-shine">
+      <h5 class="text-lg font-semibold text-white">{{ title }}</h5>
+      <p class="text-white">{{ value }}</p>
+    </div>
+</div>
+```

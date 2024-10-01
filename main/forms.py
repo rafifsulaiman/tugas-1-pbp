@@ -5,3 +5,4 @@ class GetSupplyForm(ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'description', 'image']
+        
