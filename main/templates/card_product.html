@@ -1,20 +1,20 @@
 <div class="relative break-inside-avoid bg-purple-100 shadow-md rounded-lg mb-6 border-2 border-purple-300 dark:bg-gray-700 max-w-full">
     <!-- Flex container for image and content -->
-    <div class="flex items-start p-4 space-x-4 min-w-0">
-        <!-- Product image on the left -->
-        <div class="flex-shrink-0">
-            <img src="{{ product_entry.image.url }}" alt="Gambar Produk" width="300" height="400" class="rounded-xl">
+    <div class="flex flex-wrap items-start p-4 space-x-4 min-w-0">
+        <!-- Product image on the left (or top in mobile view) -->
+        <div class="flex-shrink-0 w-full sm:w-auto">
+            <img src="{{ product_entry.image.url }}" alt="Gambar Produk" class="rounded-xl w-full sm:w-[300px] h-auto">
         </div>
 
-        <!-- Product content on the right -->
-        <div class="w-0 flex-grow">
-            <h3 class="font-bold text-4xl mb-2 whitespace-normal break-words">{{ product_entry.name }}</h3>
-            <p class="text-gray-600 text-xl mb-8 dark:text-gray-200">{{ product_entry.description }}</p>
+        <!-- Product content on the right (or below image in mobile view) -->
+        <div class="flex-grow w-full sm:w-auto mt-4 sm:mt-0 overflow-hidden">
+            <h3 class="font-bold text-3xl sm:text-4xl mb-2 break-words">{{ product_entry.name }}</h3>
+            <p class="text-gray-600 text-lg sm:text-xl mb-8 dark:text-gray-200 break-words overflow-wrap">{{ product_entry.description }}</p>
             <hr class="border-t-2 border-gray-400 my-4">
 
             <div class="mt-4">
-                <p class="text-2xl font-bold mt-4 mb-2">Price</p>
-                <p class="text-gray-600 text-lg dark:text-gray-200">Rp. {{ product_entry.price }}</p>
+                <p class="text-xl sm:text-2xl font-bold mt-4 mb-2">Price</p>
+                <p class="text-gray-600 text-lg dark:text-gray-200">{{ product_entry.price }}</p>
             </div>
         </div>
     </div>
