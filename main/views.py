@@ -9,16 +9,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 import datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 
 @login_required(login_url='/login')
 def show_products(request):
-    product_entries = Product.objects.filter(user=request.user)
     content = {
         'user_name': request.user.username,
         'name' : 'Rafif Sulaiman Dirvesa',
         'npm' : "2306222771",
         'class' : 'PBP C',
-        'product_entries' : product_entries,
         'last_login' : request.COOKIES['last_login'],
     }
     
@@ -36,11 +37,11 @@ def create_supply(request):
     return render(request, 'create_supply.html', context)
 
 def show_xml(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
@@ -74,6 +75,8 @@ def login_user(request):
             response = HttpResponseRedirect(reverse("main:show_products"))
             response.set_cookie('last_login', str(datetime.datetime.now()))
             return response
+        else:
+            messages.error(request, 'Username atau password salah!')
 
     else:
         form = AuthenticationForm(request)
@@ -105,3 +108,16 @@ def delete_product(request, id):
     product = Product.objects.get(pk = id)
     product.delete()
     return HttpResponseRedirect(reverse('main:show_products'))
+
+@csrf_exempt
+@require_POST
+def add_product_ajax(request):
+    name = strip_tags(request.POST.get('name'))
+    price = strip_tags(request.POST.get('price'))
+    description = request.POST.get('description')
+    image = request.POST.get('image')
+    user = request.user
+    
+    new_product = Product(name=name, price=price, description=description, image=image, user=user)
+    new_product.save()
+    return HttpResponse(b"Product added", status=201)
