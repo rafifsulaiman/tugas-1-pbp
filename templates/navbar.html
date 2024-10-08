@@ -2,8 +2,8 @@
 <nav class="bg-gray-800 shadow-lg fixed top-0 left-0 z-40 w-screen dark:bg-gray-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
     <!-- Logo mentok ke kiri -->
-    <div class="flex items-center space-x-0 absolute left-7 pr-4">
-      <img src="{% static 'gif/applogo.png' %}" alt="Sad face" class="w-18 h-12 mb-0"/>
+    <div class="flex items-center space-x-2 absolute left-7 pr-4">
+      <img src="{% static 'gif/cropped_image.png' %}" alt="Sad face" class="w-18 h-12 mb-0"/>
       <h1 class="text-2xl font-bold text-purple-400 dark:text-purple-300">GetSupply</h1>
     </div>
 
@@ -16,6 +16,10 @@
 
         <a href="{% url 'main:create_supply' %}" class="hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
           Add New Product
+        </a>
+
+        <a data-modal-target="crudModal" data-modal-toggle="crudModal" class="hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300" onclick="showModal();">
+          Add New Product by AJAX
         </a>
 
         <a href="{% url 'main:show_products' %}#products" class="hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
@@ -62,6 +66,10 @@
 
         <a href="{% url 'main:create_supply' %}" class="block hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
           Add New Product
+        </a>
+
+        <a data-modal-target="crudModal" data-modal-toggle="crudModal" class="block hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300" onclick="showModal();">
+          Add New Product by AJAX
         </a>
 
         <a href="{% url 'main:show_products' %}#products" class="block hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">

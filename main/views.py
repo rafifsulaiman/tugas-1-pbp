@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from main.forms import GetSupplyForm
 from main.models import Product
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
@@ -112,12 +112,11 @@ def delete_product(request, id):
 @csrf_exempt
 @require_POST
 def add_product_ajax(request):
-    name = strip_tags(request.POST.get('name'))
-    price = strip_tags(request.POST.get('price'))
-    description = request.POST.get('description')
-    image = request.POST.get('image')
-    user = request.user
-    
-    new_product = Product(name=name, price=price, description=description, image=image, user=user)
-    new_product.save()
-    return HttpResponse(b"Product added", status=201)
+    form = GetSupplyForm(request.POST, request.FILES or None)
+    if form.is_valid():
+        supply_entry = form.save(commit=False)
+        supply_entry.user = request.user
+        supply_entry.save()
+        return JsonResponse({'message': 'Product added successfully!'}, status=201)
+    else:
+        return JsonResponse({'errors': form.errors}, status=400)

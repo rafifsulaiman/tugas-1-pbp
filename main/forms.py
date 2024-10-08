@@ -8,10 +8,10 @@ class GetSupplyForm(ModelForm):
         model = Product
         fields = ['name', 'price', 'description', 'image']
         
-    def clean_product(self):
-        product = self.cleaned_data.get('product')
-        return strip_tags(product)
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+        return strip_tags(name)
     
-    def clean_price(self):
-        price = self.cleaned_data.get('price')
-        return strip_tags(price)
+    def clean_description(self):
+        description = self.cleaned_data["description"]
+        return strip_tags(description)

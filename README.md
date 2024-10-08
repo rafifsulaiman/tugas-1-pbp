@@ -12,6 +12,7 @@
 - [Tugas 3](#tugas-3)
 - [Tugas 4](#tugas-4)
 - [Tugas 5](#tugas-5)
+- [Tugas 6](#tugas-6)
 
 # TUGAS 2
 [Back to Table of Contents](#table-of-contents)
@@ -78,7 +79,8 @@ urlpatterns = [
 - untuk melakukan upload pada PWS, saya membuka halaman PWS pada https://pbp.cs.ui.ac.id dan melakukan login. lalu saya membuat proyek baru pada PWS dengan menekan tombol Create New Project dan menamai proyeknya dengan tugas-1-pbp. lalu saya membuka kembali file ```settings.py``` saya dan menambahkan URL deployment PWS saya pada ALLOWED_HOST dengan format <username-sso>-<nama proyek>.pbp.cs.ui.ac.id dan melakukan git add, commit, dan push ke Github. lalu saya mengikuti tahapan-tahapan berupa perintah command prompt yang terdapat pada Project Command pada halaman PWS proyek saya. terakhir saya melakukan perintah pada command prompt berupa git branch -M main untuk mengubah branch utama menjadi main.
 
 2. berikut bagan berisi request client ke web aplikasi berbasis Django.
-![messageImage_1725905119582](https://github.com/user-attachments/assets/5dc1c04a-a684-48a3-8a75-fb18979ed9d7)
+
+      ![messageImage_1725905119582](https://github.com/user-attachments/assets/5dc1c04a-a684-48a3-8a75-fb18979ed9d7)
 
 ketika ada HTTP request yang dilakukan melalui browsing platform, alamat HTTP akan dicek apakah sesuai dengan url yang berada pada file ```urls.py```. jika sesuai, maka permintaan akan dilanjutkan ke file ```views.py``` yang berisikan data untuk atribut-atribut yang terdapat pada ```models.py```. setelah mendapatkan data dan juga atribut, data dan atribut itu akan disalurkan ke template yang sudah dibuat dengan file main.html. setelah data masuk ke dalam template, template akan memberikan respon ke browsing platform dengan menyajikan tampilan web sesuai dengan template yang sudah dibuat.
 
@@ -1592,4 +1594,372 @@ else:
       <p class="text-white">{{ value }}</p>
     </div>
 </div>
+```
+
+# TUGAS 6
+[Back to Table of Contents](#table-of-contents)
+## Jawaban
+**1. Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!**
+  - JavaScript adalah bahasa pemrograman yang digunakan untuk membuat halaman web menjadi interaktif.
+  - JavaScript memungkinkan kita untuk membuat animasi, validasi form, dan berbagai efek lain yang membuat website menjadi lebih dinamis dan responsif.
+  - JavaScript juga memungkinkan kita untuk membuat aplikasi web yang lebih cepat dan efisien.
+
+**2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan ```fetch()```! Apa yang akan terjadi jika kita tidak menggunakan await?**
+- await adalah operator yang digunakan untuk menunggu hasil dari ```fetch()```
+- await memungkinkan kita untuk menunggu hasil dari ```fetch()``` sebelum melanjutkan eksekusi program
+- jika tidak menggunakan await, maka ```fetch()``` akan dieksekusi tanpa menunggu hasilnya, dan program akan melanjutkan eksekusi tanpa menunggu hasil dari ```fetch()```, hal ini dapat menyebabkan error karena mencoba data yang belum tersedia.
+
+**3. Mengapa kita perlu menggunakan decorator ```csrf_exempt``` pada view yang akan digunakan untuk AJAX POST?**
+- decorator ```csrf_exempt``` digunakan untuk menonaktifkan proteksi CSRF pada view yang akan digunakan untuk AJAX POST
+- proteksi CSRF adalah mekanisme keamanan yang digunakan untuk melindungi aplikasi web dari serangan CSRF
+- jika tidak menggunakan ```csrf_exempt```, maka akan terjadi error CSRF karena fetch() tidak mengirim CSRF token
+- namun, penggunaan ```csrf_exempt``` harus dilakukan dengan bijak karena dapat membuat aplikasi web rentan terhadap serangan CSRF
+
+**4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?**
+- pembersihan data input pengguna dilakukan di belakang (backend) untuk menjaga keamanan dan validasi data
+- jika hanya dilakukan di frontend saja, maka data yang dikirim dapat diubah sebelum dikirim ke backend, hal ini dapat menyebabkan error dan keamanan aplikasi web menjadi rentan
+- dengan melakukan pembersihan data input pengguna di backend, kita dapat memastikan bahwa data yang dikirim oleh pengguna adalah data yang valid dan aman
+- validasi di frontend lebih mudah diretas oleh user, jadi validasi di backend lebih aman
+
+**5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!**
+- pertama-tama, saya menambahkan baris ```else``` pad a fungsi ```login_user``` di file ```views.py``` saya, berikut kode nya.
+
+```bash
+def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_products"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+        else:
+            messages.error(request, 'Username atau password salah!')
+
+    else:
+        form = AuthenticationForm(request)
+    context = {'form': form}
+    return render(request, 'login.html', context)
+```
+
+- kemudian, saya melakukan import dan membuat fungsi ```add_product_ajax``` di file ```views.py``` saya, berikut kode nya.
+
+```bash
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
+...
+...
+@csrf_exempt
+@require_POST
+def add_product_ajax(request):
+    name = strip_tags(request.POST.get('name'))
+    price = strip_tags(request.POST.get('price'))
+    description = request.POST.get('description')
+    image = request.POST.get('image')
+    user = request.user
+    
+    new_product = Product(name=name, price=price, description=description, image=image, user=user)
+    new_product.save()
+    return HttpResponse(b"Product added", status=201)
+```
+
+- kemudian, saya menambahkan routing untuk ```add_product_ajax``` di file ```urls.py``` saya, berikut kode nya.
+
+```bash
+from main.views import ..., add_mood_entry_ajax
+...
+urlpatterns = [
+    ...
+    path('add-product-ajax/', add_product_ajax, name='add_product_ajax'),
+]
+```
+
+- setelah itu, saya menghapus beberapa baris kode dan menambahkan beberapa baris kode pada file ```views.py``` saya, berikut kode yang dihapus.
+
+```bash
+...
+product_entries = Product.objects.filter(user=request.user)
+...
+'product_entries': product_entries
+...
+...
+
+def show_xml(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+
+- dan berikut kode yang ditambahkan.
+
+```bash
+def show_xml(request):
+    data = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request):
+    data = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+
+- lalu, saya melakukan modifikasi pada file ```main.html``` saya dengan menambahkan bagian untuk menampilkan data dengan ```fetch()```, membuat modal sebagai form untuk menambahkan data, dan menambahkan data menggunakan AJAX, dan melakukan pembersihan data input menggunakan DOMPurify. berikut kode ```main.html``` saya.
+
+```bash
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>GetSupply</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col transition-colors duration-500">
+  <div class="p-2 mb-6 relative">
+    <p class="text-center text-gray-600 dark:text-gray-100 font-bold text-3xl mb-8">Welcome to GetSupply!</p>
+    <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
+      {% include "card_info.html" with title='Name' value=name %}
+      {% include "card_info.html" with title='NPM' value=npm %}
+      {% include "card_info.html" with title='Class' value=class %}
+    </div>
+  </div>
+
+  <!-- Bar bertuliskan "Products" -->
+  <div class="w-full bg-purple-700 dark:bg-purple-800 text-center dark:bg-purple-500 text-white dark:text-gray-200 text-2xl font-bold p-3 rounded-md mb-4">
+    Products
+  </div>
+
+  
+  <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-purple-900 hover:bg-purple-700 text-white dark:bg-purple-500 dark:text-gray-200 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105" onclick="showModal();">
+    Add New Product by AJAX
+  </button>
+  
+  <!-- Kondisi Produk -->
+  <section id="products" class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
+    <div id="product_cards"></div>
+    <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+      <div id="crudModalContent" class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Add New Product</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="px-6 py-4 space-y-6 form-style">
+          <form id="GetSupplyForm">
+            <div class="mb-4">
+              <label for="name" class="block text-sm font-medium text-gray-700 dark:text-white">Name</label>
+              <input type="text" id="name" name="name" class="mt-1 block w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" placeholder="Enter your product's name" required>
+            </div>
+            <div class="mb-4">
+              <label for="price" class="block text-sm font-medium text-gray-700 dark:text-white">Price (Number Only)</label>
+              <input type="number" id="price" name="price" class="mt-1 block w-full border dark:bg-gray-700 border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" required>
+            </div>
+            <div class="mb-4">
+              <label for="description" class="block text-sm font-medium text-gray-700 dark:text-white">Description</label>
+              <textarea id="description" name="description" rows="3" class="mt-1 block w-full dark:bg-gray-700 h-52 resize-none border border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" placeholder="Describe your product" required></textarea>
+            </div>
+            <div class="mb-4">
+              <label for="image" class="block text-sm font-medium text-gray-700 dark:text-white">Product's Image</label>
+              <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full border border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" required>
+            </div>
+          </form>
+        </div>
+        <!-- Modal footer -->
+        <div class="p-6 border-t border-gray-200 rounded-b">
+          <div class="flex justify-end space-x-2">
+            <button type="submit" id="submitProduct" form="GetSupplyForm" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">Add</button>
+            <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>  
+  
+  <!-- Last Login -->
+  <div class="flex flex-col h-screen"> <!-- Use h-screen to take full height -->
+    <div class="flex-grow"> <!-- This div will expand to fill the space -->
+      <!-- Other content here -->
+    </div>
+    <div class="px-0 mt-6">
+      <div class="flex rounded-md items-center bg-purple-600 dark:bg-purple-500 py-2 px-4 w-fit">
+        <h1 class="text-white text-center dark:text-gray-200">Last Login: {{last_login}}</h1>
+      </div>
+    </div>
+  </div>  
+
+<script>
+  async function getProducts(){
+    return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+  }
+
+  function addProduct() {
+    fetch("{% url 'main:add_product_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#GetSupplyForm')),
+    })
+    .then(response => refreshProducts())
+
+    document.getElementById("GetSupplyForm").reset(); 
+    document.querySelector("[data-modal-toggle='crudModal']").click();
+
+    return false;
+  }
+
+  async function refreshProducts() {
+    document.getElementById("product_cards").innerHTML = ""; // Clear existing products
+    document.getElementById("product_cards").className = "";
+    
+    const productEntries = await getProducts(); // Fetch products
+    let htmlString = "";
+    let classNameString = "";
+
+    if (productEntries.length === 0) {
+        classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+        htmlString = `
+            <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                <img src="{% static 'gif/laughing.gif' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+                <p class="text-center text-gray-600 mt-4">Data product is empty.</p>
+            </div>
+        `;
+    } else {
+        classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full";
+
+        productEntries.forEach((item) => {
+            const name = DOMPurify.sanitize(item.fields.name);
+            const price = DOMPurify.sanitize(item.fields.price);
+            const description = DOMPurify.sanitize(item.fields.description);
+
+            htmlString += `
+            <div class="relative break-inside-avoid bg-purple-100 shadow-md rounded-lg mb-6 border-2 border-purple-300 dark:bg-gray-700 max-w-full">
+                <!-- Flex container for image and content -->
+                <div class="flex flex-wrap items-start p-4 space-x-4 min-w-0">
+                    <!-- Product image on the left (or top in mobile view) -->
+                    <div class="flex-shrink-0 w-full sm:w-auto">
+                        <img src="${item.fields.image}" alt="Gambar Produk" class="rounded-xl w-full sm:w-[300px] h-auto">
+                    </div>
+
+                    <!-- Product content on the right (or below image in mobile view) -->
+                    <div class="flex-grow w-full sm:w-auto mt-4 sm:mt-0 overflow-hidden">
+                        <h3 class="font-bold text-3xl sm:text-4xl mb-2 break-words">${name}</h3>
+                        <p class="text-gray-600 text-lg sm:text-xl mb-8 dark:text-gray-200 break-words overflow-wrap">${description}</p>
+                        <hr class="border-t-2 border-gray-400 my-4">
+                        <div class="mt-4">
+                            <p class="text-xl sm:text-2xl font-bold mt-4 mb-2">Price</p>
+                            <p class="text-gray-600 text-lg dark:text-gray-200">${price}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit and Delete buttons -->
+                <div class="flex justify-end p-4 space-x-2">
+                    <a href="/edit-product/${item.pk}" class="bg-purple-500 hover:bg-purple-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                        </svg>
+                    </a>
+                    <a href="/delete-product/${item.pk}" class="bg-amber-600 hover:bg-amber-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            `;
+        });
+    }
+    
+    document.getElementById("product_cards").className = classNameString;
+    document.getElementById("product_cards").innerHTML = htmlString;
+}
+refreshProducts();
+
+const modal = document.getElementById('crudModal');
+const modalContent = document.getElementById('crudModalContent');
+
+  function showModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+  document.getElementById("GetSupplyForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addProduct();
+  })
+</script>
+{% endblock content %}
+```
+
+- terakhir, saya melakukan modifikasi pada ```views.py``` dan ```urls.py``` agar dapat membersihkan data menggunakan ```strip_tags```.
+- pertama-tama, saya melakukan import ```strip_tags``` di file ```views.py``` dan ```urls.py``` saya, berikut kode nya.
+
+```bash
+from django.utils.html import strip_tags
+```
+
+- lalu, saya melakukan modifikasi pada fungsi ```add_product_ajax``` di file ```views.py``` saya, berikut kode nya.
+
+```bash
+@csrf_exempt
+@require_POST
+def add_product_ajax(request):
+    name = strip_tags(request.POST.get('name'))
+    price = strip_tags(request.POST.get('price'))
+    description = strip_tags(request.POST.get('description'))
+    image = strip_tags(request.POST.get('image'))
+    user = request.user
+...
+```
+
+- lalu, saya menambah fungsi baru pada file ```forms.py``` saya, berikut kode nya.
+
+```bash
+from typing import Any
+from django.forms import ModelForm
+from main.models import Product
+from django.utils.html import strip_tags
+
+class GetSupplyForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'price', 'description', 'image']
+        
+    def clean_product(self):
+        product = self.cleaned_data.get('product')
+        return strip_tags(product)
+    
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        return strip_tags(price)
 ```
