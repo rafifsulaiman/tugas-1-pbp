@@ -1729,25 +1729,18 @@ def show_json(request):
       {% include "card_info.html" with title='Class' value=class %}
     </div>
   </div>
-
-  <!-- Bar bertuliskan "Products" -->
-  <div class="w-full bg-purple-700 dark:bg-purple-800 text-center dark:bg-purple-500 text-white dark:text-gray-200 text-2xl font-bold p-3 rounded-md mb-4">
-    Products
-  </div>
-
-  
-  <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-purple-900 hover:bg-purple-700 text-white dark:bg-purple-500 dark:text-gray-200 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105" onclick="showModal();">
-    Add New Product by AJAX
-  </button>
   
   <!-- Kondisi Produk -->
   <section id="products" class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
+    <div class="w-full bg-purple-700 dark:bg-purple-800 text-center dark:bg-purple-500 text-white dark:text-gray-200 text-2xl font-bold p-3 rounded-md mb-4">
+      Products
+    </div>
     <div id="product_cards"></div>
     <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
       <div id="crudModalContent" class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
         <!-- Modal header -->
-        <div class="flex items-center justify-between p-4 border-b rounded-t">
-          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Add New Product</h3>
+        <div class="flex items-center justify-between p-4 border-b dark:border-purple-800 rounded-t">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-300">Add New Product</h3>
           <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -1757,30 +1750,30 @@ def show_json(request):
         </div>
         <!-- Modal body -->
         <div class="px-6 py-4 space-y-6 form-style">
-          <form id="GetSupplyForm">
+          <form id="getSupplyForm" enctype="multipart/form-data">
             <div class="mb-4">
-              <label for="name" class="block text-sm font-medium text-gray-700 dark:text-white">Name</label>
+              <label for="name" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Name</label>
               <input type="text" id="name" name="name" class="mt-1 block w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" placeholder="Enter your product's name" required>
             </div>
             <div class="mb-4">
-              <label for="price" class="block text-sm font-medium text-gray-700 dark:text-white">Price (Number Only)</label>
+              <label for="price" class="block text-lg font-medium text-gray-700 text-lg dark:text-gray-300">Price</label>
               <input type="number" id="price" name="price" class="mt-1 block w-full border dark:bg-gray-700 border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" required>
             </div>
             <div class="mb-4">
-              <label for="description" class="block text-sm font-medium text-gray-700 dark:text-white">Description</label>
+              <label for="description" class="block text-lg font-medium text-gray-700 text-lg dark:text-gray-300">Description</label>
               <textarea id="description" name="description" rows="3" class="mt-1 block w-full dark:bg-gray-700 h-52 resize-none border border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" placeholder="Describe your product" required></textarea>
             </div>
             <div class="mb-4">
-              <label for="image" class="block text-sm font-medium text-gray-700 dark:text-white">Product's Image</label>
-              <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full border border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" required>
+              <label for="image" class="block text-lg font-medium text-gray-700 text-lg dark:text-gray-300">Image URL</label>
+              <input type="text" id="image" name="image" class="mt-1 block w-full border dark:bg-gray-700 border-gray-300 dark:border-gray-500 rounded-md p-2 hover:border-purple-700" placeholder="Enter the image URL" required>
             </div>
           </form>
         </div>
         <!-- Modal footer -->
-        <div class="p-6 border-t border-gray-200 rounded-b">
-          <div class="flex justify-end space-x-2">
-            <button type="submit" id="submitProduct" form="GetSupplyForm" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">Add</button>
-            <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
+        <div class="p-6 border-t border-gray-200 rounded-b dark:border-purple-800">
+          <div class="flex flex-col items-end space-y-2">
+            <button type="submit" id="submitProduct" form="getSupplyForm" class="bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded-lg w-full">Add</button>
+            <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg w-full" id="cancelButton">Cancel</button>
           </div>
         </div>
       </div>
@@ -1805,22 +1798,54 @@ def show_json(request):
   }
 
   function addProduct() {
+    const form = document.querySelector('#getSupplyForm');
     fetch("{% url 'main:add_product_ajax' %}", {
-      method: "POST",
-      body: new FormData(document.querySelector('#GetSupplyForm')),
+        method: "POST",
+        body: new FormData(form),
     })
-    .then(response => refreshProducts())
+    .then(response => response.json())
+    .then(data => {
+        if (data.errors) {
+            // Handle form errors and display them to the user
+            displayFormErrors(data.errors);
+        } else {
+            // Clear the form fields before hiding the modal to ensure it's reset properly
+            form.reset(); 
+            
+            // Refresh products if the submission was successful
+            refreshProducts();
+            
+            // Hide the modal after resetting the form
+            hideModal();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
 
-    document.getElementById("GetSupplyForm").reset(); 
-    document.querySelector("[data-modal-toggle='crudModal']").click();
 
-    return false;
-  }
+// Function to display form errors
+function displayFormErrors(errors) {
+    // Clear any existing error messages
+    const errorFields = document.querySelectorAll('.error-message');
+    errorFields.forEach((field) => field.remove());
+
+    // Display error messages next to the form fields
+    Object.keys(errors).forEach((field) => {
+        const errorMessage = errors[field].join(', ');
+        const inputField = document.getElementById(field);
+
+        if (inputField) {
+            const errorElement = document.createElement('div');
+            errorElement.className = 'error-message text-red-500 text-sm mt-1';
+            errorElement.innerText = errorMessage;
+            inputField.parentElement.appendChild(errorElement);
+        }
+    });
+}
 
   async function refreshProducts() {
     document.getElementById("product_cards").innerHTML = ""; // Clear existing products
     document.getElementById("product_cards").className = "";
-    
     const productEntries = await getProducts(); // Fetch products
     let htmlString = "";
     let classNameString = "";
@@ -1840,6 +1865,7 @@ def show_json(request):
             const name = DOMPurify.sanitize(item.fields.name);
             const price = DOMPurify.sanitize(item.fields.price);
             const description = DOMPurify.sanitize(item.fields.description);
+            const imageUrl = item.fields.image;
 
             htmlString += `
             <div class="relative break-inside-avoid bg-purple-100 shadow-md rounded-lg mb-6 border-2 border-purple-300 dark:bg-gray-700 max-w-full">
@@ -1847,22 +1873,18 @@ def show_json(request):
                 <div class="flex flex-wrap items-start p-4 space-x-4 min-w-0">
                     <!-- Product image on the left (or top in mobile view) -->
                     <div class="flex-shrink-0 w-full sm:w-auto">
-                        <img src="${item.fields.image}" alt="Gambar Produk" class="rounded-xl w-full sm:w-[300px] h-auto">
+                        <img src="${imageUrl}" alt="Gambar Produk" class="rounded-xl w-full sm:w-[300px] h-auto">
                     </div>
-
-                    <!-- Product content on the right (or below image in mobile view) -->
                     <div class="flex-grow w-full sm:w-auto mt-4 sm:mt-0 overflow-hidden">
                         <h3 class="font-bold text-3xl sm:text-4xl mb-2 break-words">${name}</h3>
                         <p class="text-gray-600 text-lg sm:text-xl mb-8 dark:text-gray-200 break-words overflow-wrap">${description}</p>
                         <hr class="border-t-2 border-gray-400 my-4">
                         <div class="mt-4">
                             <p class="text-xl sm:text-2xl font-bold mt-4 mb-2">Price</p>
-                            <p class="text-gray-600 text-lg dark:text-gray-200">${price}</p>
+                            <p class="text-gray-600 text-lg dark:text-gray-200">Rp. ${price}</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Edit and Delete buttons -->
                 <div class="flex justify-end p-4 space-x-2">
                     <a href="/edit-product/${item.pk}" class="bg-purple-500 hover:bg-purple-700 text-white rounded-full p-2 transition duration-300 shadow-md">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -1883,42 +1905,48 @@ def show_json(request):
     document.getElementById("product_cards").className = classNameString;
     document.getElementById("product_cards").innerHTML = htmlString;
 }
-refreshProducts();
 
 const modal = document.getElementById('crudModal');
 const modalContent = document.getElementById('crudModalContent');
 
-  function showModal() {
-      const modal = document.getElementById('crudModal');
-      const modalContent = document.getElementById('crudModalContent');
+function showModal() {
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+  
+  modal.classList.remove('hidden'); 
+  setTimeout(() => {
+    modalContent.classList.remove('opacity-0', 'scale-95');
+    modalContent.classList.add('opacity-100', 'scale-100');
+  }, 50); 
+}
 
-      modal.classList.remove('hidden'); 
-      setTimeout(() => {
-        modalContent.classList.remove('opacity-0', 'scale-95');
-        modalContent.classList.add('opacity-100', 'scale-100');
-      }, 50); 
-  }
+function hideModal() {
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+  
+  modalContent.classList.remove('opacity-100', 'scale-100');
+  modalContent.classList.add('opacity-0', 'scale-95');
+  
+  setTimeout(() => {
+    modal.classList.add('hidden');
+  }, 150); 
+}
 
-  function hideModal() {
-      const modal = document.getElementById('crudModal');
-      const modalContent = document.getElementById('crudModalContent');
-
-      modalContent.classList.remove('opacity-100', 'scale-100');
-      modalContent.classList.add('opacity-0', 'scale-95');
-
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 150); 
-  }
-
-  document.getElementById("cancelButton").addEventListener("click", hideModal);
-  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
-  document.getElementById("GetSupplyForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    addProduct();
-  })
+    document.getElementById("cancelButton").addEventListener("click", hideModal);
+    document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+    document.getElementById("getSupplyForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      addProduct();
+    })
+refreshProducts();
 </script>
 {% endblock content %}
+
+.error-message {
+  color: #e53e3e; /* Red color for error text */
+  font-size: 0.875rem; /* Smaller font size */
+  margin-top: 0.25rem; /* Small margin for spacing */
+}
 ```
 
 - terakhir, saya melakukan modifikasi pada ```views.py``` dan ```urls.py``` agar dapat membersihkan data menggunakan ```strip_tags```.
@@ -1934,12 +1962,14 @@ from django.utils.html import strip_tags
 @csrf_exempt
 @require_POST
 def add_product_ajax(request):
-    name = strip_tags(request.POST.get('name'))
-    price = strip_tags(request.POST.get('price'))
-    description = strip_tags(request.POST.get('description'))
-    image = strip_tags(request.POST.get('image'))
-    user = request.user
-...
+    form = GetSupplyForm(request.POST, request.FILES or None)
+    if form.is_valid():
+        supply_entry = form.save(commit=False)
+        supply_entry.user = request.user
+        supply_entry.save()
+        return JsonResponse({'message': 'Product added successfully!'}, status=201)
+    else:
+        return JsonResponse({'errors': form.errors}, status=400)
 ```
 
 - lalu, saya menambah fungsi baru pada file ```forms.py``` saya, berikut kode nya.
@@ -1955,11 +1985,11 @@ class GetSupplyForm(ModelForm):
         model = Product
         fields = ['name', 'price', 'description', 'image']
         
-    def clean_product(self):
-        product = self.cleaned_data.get('product')
-        return strip_tags(product)
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        return strip_tags(name)
     
-    def clean_price(self):
-        price = self.cleaned_data.get('price')
-        return strip_tags(price)
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        return strip_tags(description)
 ```
