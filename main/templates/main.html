@@ -98,6 +98,7 @@
             // Refresh products if the submission was successful
             refreshProducts();
             hideModal();
+            form.reset()
         }
     })
     .catch(error => console.error('Error:', error));
