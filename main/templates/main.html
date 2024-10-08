@@ -85,9 +85,10 @@
   }
 
   function addProduct() {
+    const form = document.querySelector('#getSupplyForm');
     fetch("{% url 'main:add_product_ajax' %}", {
         method: "POST",
-        body: new FormData(document.querySelector('#getSupplyForm')),
+        body: new FormData(form),
     })
     .then(response => response.json())
     .then(data => {
@@ -95,14 +96,19 @@
             // Handle form errors and display them to the user
             displayFormErrors(data.errors);
         } else {
+            // Clear the form fields before hiding the modal to ensure it's reset properly
+            form.reset(); 
+            
             // Refresh products if the submission was successful
             refreshProducts();
+            
+            // Hide the modal after resetting the form
             hideModal();
-            form.reset()
         }
     })
     .catch(error => console.error('Error:', error));
 }
+
 
 // Function to display form errors
 function displayFormErrors(errors) {
@@ -221,8 +227,6 @@ function hideModal() {
     })
 refreshProducts();
 </script>
-
-
 {% endblock content %}
 
 .error-message {
