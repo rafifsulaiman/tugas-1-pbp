@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-cy6$!n_b==z)4=8gezd7z&^4orc0ot%9#x$10(bov^)fx!kj*w
 PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION #kalo mau cek error dimana, ubah ke true
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rafif-sulaiman-getsupply.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rafif-sulaiman-getsupply.pbp.cs.ui.ac.id", "10.0.2.2"]
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'widget_tweaks',
+    'authentication',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'get_supply.urls'
@@ -115,6 +118,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 
 # Static files (CSS, JavaScript, Images)

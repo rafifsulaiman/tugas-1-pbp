@@ -12,6 +12,7 @@ import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
+import json
 
 @login_required(login_url='/login')
 def show_products(request):
@@ -120,3 +121,22 @@ def add_product_ajax(request):
         return JsonResponse({'message': 'Product added successfully!'}, status=201)
     else:
         return JsonResponse({'errors': form.errors}, status=400)
+    
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_product = Product.objects.create(
+            user=request.user,
+            name=data['name'],
+            price=data['price'],
+            description=data['description'],
+            image=data['image'],
+        )
+
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
